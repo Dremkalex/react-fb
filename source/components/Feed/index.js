@@ -1,5 +1,6 @@
 //Core
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 //Components
 import StatusBar from 'components/StatusBar';
@@ -10,20 +11,23 @@ import Post from 'components/Post';
 import Styles from './styles.m.css';
 
 export default class Feed extends Component {
-  render() {
-    const {
-      avatar,
-      currentUserFirstName,
-    } = this.props;
-    return (
-      <section className = { Styles.feed }>
-        <StatusBar { ...this.props }/>
-        <Composer
-          avatar = { avatar }
-          currentUserFirstName = { currentUserFirstName }
-        />
-        <Post { ...this.props }/>
-      </section>
-    );
-  }
+    static propTypes = {
+        avatar:               PropTypes.string,
+        currentUserFirstName: PropTypes.string,
+    };
+
+    render() {
+        const { avatar, currentUserFirstName } = this.props;
+
+        return (
+            <section className = { Styles.feed }>
+                <StatusBar { ...this.props } />
+                <Composer
+                    avatar = { avatar }
+                    currentUserFirstName = { currentUserFirstName }
+                />
+                <Post { ...this.props } />
+            </section>
+        );
+    }
 }
