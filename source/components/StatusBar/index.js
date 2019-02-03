@@ -10,11 +10,11 @@ import Styles from './styles.m.css';
 export default class StatusBar extends Component {
     render() {
         return (
-            <Consumer>{(context) =>(
+            <Consumer>{({avatar, currentUserFirstName, currentUserLastName}) =>(
                 <section className = { Styles.statusBar }>
                     <button>
-                        <img src = { context.avatar } />
-                        <p>{ `${context.currentUserFirstName} ${context.currentUserLastName}` }</p>
+                        <img src = { avatar } />
+                        <p>{ `${currentUserFirstName} ${currentUserLastName}` }</p>
                     </button>
                 </section>
             )}
