@@ -39,3 +39,7 @@ export const getFullApiUrl = (api, GROUP_ID) => {
 
     return `${api}/${GROUP_ID}`;
 };
+
+export const getDisplayName = (WrappedComponent) => {
+    return WrappedComponent.displayName || WrappedComponent.name || 'Component';
+};
