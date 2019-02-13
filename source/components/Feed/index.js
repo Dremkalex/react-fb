@@ -13,7 +13,8 @@ import Spinning from 'components/Spinner';
 
 //Instruments
 import Styles from './styles.m.css';
-import { api, TOKEN } from 'config/api';
+import { api, TOKEN, GROUP_ID } from 'config/api';
+import { socket } from 'socket/init.js';
 
 @withProfile
 export default class Feed extends Component {
@@ -28,12 +29,35 @@ export default class Feed extends Component {
     }
 
     componentDidMount () {
+        const { currentUserFirstName, currentUserLastName } = this.props;
         this._fetchPosts();
-        this.refetch = setInterval(this._fetchPosts, 1000);
+
+        socket.emit('join', GROUP_ID);
+
+        socket.on('create', (postJSON) => {
+            const { data: createdPost, meta} = JSON.parse(postJSON);
+
+            if (`${currentUserFirstName} ${currentUserLastName}` !== `${meta.authorFirstName} ${meta.authorLastName}`) {
+                this.setState(({posts}) => ({
+                    posts: [ createdPost, ...posts ],
+                }));
+            }
+        });
+
+        socket.on('remove', (postJSON) => {
+            const { data: removedPost, meta} = JSON.parse(postJSON);
+
+            if (`${currentUserFirstName} ${currentUserLastName}` !== `${meta.authorFirstName} ${meta.authorLastName}`) {
+                this.setState(({posts}) => ({
+                    posts: posts.filter(({id}) => id !== removedPost.id),
+                }));
+            }
+        });
     }
 
     componentWillUnmount () {
-        clearInterval(this.refetch);
+        socket.removeListener('create');
+        socket.removeListener('remove');
     }
 
     _setPostsFetchingState = (state) => {
