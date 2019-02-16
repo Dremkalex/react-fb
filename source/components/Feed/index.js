@@ -1,15 +1,17 @@
 //Core
 import React, { Component } from 'react';
 import { string } from 'prop-types';
+import { Transition } from 'react-transition-group';
+import { fromTo } from 'gsap';
 
 //Components
-import Catcher from 'components/Catcher';
-
 import { withProfile } from 'components/HOC/withProfile';
+import Catcher from 'components/Catcher';
 import StatusBar from 'components/StatusBar';
 import Composer from 'components/Composer';
 import Post from 'components/Post';
 import Spinning from 'components/Spinner';
+import Postman from 'components/Postman';
 
 //Instruments
 import Styles from './styles.m.css';
@@ -146,6 +148,10 @@ export default class Feed extends Component {
         }));
     }
 
+    _animateComposerEnter = (composer) => {
+        fromTo(composer, 2, { opacity: 0, rotationX: 50 }, { opacity: 1, rotationX: 0 });
+    }
+
     render() {
         const {posts, isPostFetching } = this.state;
         const postsJSX = posts.map((post) => {
@@ -164,7 +170,14 @@ export default class Feed extends Component {
             <section className = { Styles.feed }>
                 {<Spinning isSpinning = { isPostFetching }/>}
                 <StatusBar />
-                <Composer _createPost = { this._createPost }/>
+                <Transition
+                    appear
+                    in
+                    timeout = { 2000 }
+                    onEnter = { this._animateComposerEnter }>
+                    <Composer _createPost = { this._createPost }/>
+                </Transition>
+                <Postman />
                 {postsJSX}
             </section>
         );
