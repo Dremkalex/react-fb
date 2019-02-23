@@ -28,9 +28,14 @@ export default class Feed extends Component {
     state = {
         posts:          [],
         isPostFetching: false,
+        isPostmanEnter: true,
     }
 
     componentDidMount () {
+        setTimeout(() => this.setState({
+            isPostmanEnter: false,
+        }), 4000);
+
         const { currentUserFirstName, currentUserLastName } = this.props;
         this._fetchPosts();
 
@@ -152,8 +157,13 @@ export default class Feed extends Component {
         fromTo(composer, 2, { opacity: 0, rotationX: 50 }, { opacity: 1, rotationX: 0 });
     }
 
+    _animatePostmanEnter = (postman) => fromTo(postman, 1, { x: 1000 }, { x: -50 })
+
+    _animatePostmanExit = (postman) => fromTo(postman, 1, { x: -50 }, { x: 1000 })
+
+
     render() {
-        const {posts, isPostFetching } = this.state;
+        const {posts, isPostFetching, isPostmanEnter } = this.state;
         const postsJSX = posts.map((post) => {
             return (
                 <CSSTransition
@@ -191,7 +201,16 @@ export default class Feed extends Component {
                     onEnter = { this._animateComposerEnter }>
                     <Composer _createPost = { this._createPost }/>
                 </Transition>
-                <Postman />
+                <Transition
+                    appear
+                    unmountOnExit
+                    in = { isPostmanEnter }
+                    timeout = { 1000 }
+                    onEnter = { this._animatePostmanEnter }
+                    onExit = { this._animatePostmanExit }>
+                    <Postman />
+                </Transition>
+                {postsJSX}
                 <TransitionGroup>{postsJSX}</TransitionGroup>
             </section>
         );
