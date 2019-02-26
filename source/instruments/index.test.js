@@ -32,6 +32,10 @@ describe('instrumenrs', () => {
         expect(() => getUniqueID('hello')).toThrow();
     });
 
+    test('getUniqueID function should produce a string with default length value', () => {
+        expect(getUniqueID()).toHaveLength(15);
+    });
+
     test('getUniqueID function should produce a string of a desired given length', () => {
         expect(typeof getUniqueID()).toBe('string');
         expect(getUniqueID(5)).toHaveLength(5);
