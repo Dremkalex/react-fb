@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import cx from 'classnames';
 import { Transition } from 'react-transition-group';
 import { fromTo } from 'gsap';
+import { Link } from 'react-router-dom';
+import { func } from 'prop-types';
 
 //Components
 import { withProfile } from 'components/HOC/withProfile';
@@ -13,6 +15,10 @@ import { socket } from 'socket/init';
 
 @withProfile
 export default class StatusBar extends Component {
+    static propTypes = {
+        _handleLogOut: func.isRequired,
+    }
+
     state = {
         online: false,
     };
@@ -41,7 +47,7 @@ export default class StatusBar extends Component {
     }
 
     render() {
-        const { avatar, currentUserFirstName, currentUserLastName } = this.props;
+        const { avatar, currentUserFirstName, _handleLogOut } = this.props;
         const { online } = this.state;
         const statusStyle = cx(Styles.status, {
             [ Styles.online ]:  online,
@@ -61,10 +67,12 @@ export default class StatusBar extends Component {
                         <div>{ statusMessage }</div>
                         <span />
                     </div>
-                    <button>
+                    <Link to = '/profile'>
                         <img src = { avatar } />
-                        <p>{ `${currentUserFirstName} ${currentUserLastName}` }</p>
-                    </button>
+                        <span>{ currentUserFirstName }</span>
+                    </Link>
+                    <Link to = '/feed'>Feed</Link>
+                    <button onClick = { _handleLogOut }>Log Out</button>
                 </section>
             </Transition>
 
